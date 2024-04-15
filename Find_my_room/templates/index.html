@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find The Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #imageContainer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #downloadLink {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #downloadLink a {
+            background-color: #28a745;
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        #downloadLink a:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find The Room</h1>
+    <form id="itemForm">
+        <label for="blockName">Block Name:</label>
+        <select id="blockName" name="blockName">
+            <option value="smvb">Sir M Visvesvarya Block (SMVB)</option>
+            <option value="cvr">CV Raman Block</option>
+        </select>
+        <br>
+        <label for="roomNumber">Room Number:</label>
+        <input type="text" id="roomNumber" name="roomNumber">
+        <br>
+        <button type="button" onclick="displayImage()">Display Image</button>
+    </form>
+
+    <div id="imageContainer">
+        <!-- Image will be displayed here -->
+    </div>
+
+    <div id="downloadLink" style="display: none;">
+        <!-- Download link will be displayed here -->
+    </div>
+
+    <script>
+        function displayImage() {
+            var blockName = document.getElementById('blockName').value;
+            var roomNumber = document.getElementById('roomNumber').value;
+
+            // Make an AJAX request to retrieve the image URL based on blockName and roomNumber
+            var url = '/get_image/?block_name=' + blockName + '&room_number=' + roomNumber;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.image_url) {
+                        var imageHtml = '<img src="' + data.image_url + '" alt="Image" style="max-width: 100%; height: auto;">';
+                        document.getElementById('imageContainer').innerHTML = imageHtml;
+                        document.getElementById('downloadLink').style.display = 'block';
+                        var downloadLinkHtml = '<a href="' + data.image_url + '" download>Download Image</a>';
+                        document.getElementById('downloadLink').innerHTML = downloadLinkHtml;
+                    } else {
+                        // Handle case where no image is found
+                        alert('No image found for this room.');
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
+</body>
+</html>
